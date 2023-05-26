@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -20,23 +22,28 @@ public class ArticleController {
     @Autowired // 스프링부트가 미리 생성해놓은 객체를 가져다가 자동 연결
     private ArticleRepository articleRepository;
 
+
     @GetMapping("/articles/new")
     public String newArticleForm() {
         return "articles/new";
     }
 
+
     @PostMapping("/articles/create")
     public String createAritcle(ArticleForm form) {
         log.info(form.toString());
+
         // 1. DTO를 Entity로 변환
         Article article = form.toEntity();
         log.info(article.toString());
+
         // 2. Repository에게 Entity를 DB에 전달하도록 지시
         Article saved = articleRepository.save(article);
         log.info(saved.toString());
 
-        return "";
+        return "redirect:/articles/" + saved.getId();
     }
+
 
     @GetMapping("/articles/{id}")
     public String show(@PathVariable Long id, Model model) {
@@ -50,5 +57,18 @@ public class ArticleController {
 
         // 3. 보여줄 페이지를 설정
         return "articles/show";
+    }
+
+
+    @GetMapping("/articles")
+    public String index(Model model) {
+        // 1. 모든 아티클을 가져온다
+        List<Article> articleEntityList = articleRepository.findAll();
+
+        // 2. 가져온 아티클 묶음을 뷰로 전달
+        model.addAttribute("articleList", articleEntityList);
+
+        // 3. 보여줄 페이지를 설정
+        return "articles/index";
     }
 }

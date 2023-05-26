@@ -8,16 +8,15 @@
     </tr>
     </thead>
     <tbody>
-    {{#article}}
+    {{#articleList}}
         <tr>
             <th>{{id}}</th>
             <td>{{title}}</td>
             <td>{{content}}</td>
         </tr>
-    {{/article}}
+    {{/articleList}}
     </tbody>
 </table>
-<a href="/articles">All Article</a>
-<br>
+
 <a href="/articles/new">New Article</a>
 {{>layouts/footer}}
