@@ -11,13 +11,18 @@
     {{#article}}
         <tr>
             <th>{{id}}</th>
-            <td>{{title}}</td>
+            <td><a href="/articles/{{id}}">{{title}}</a></td>
             <td>{{content}}</td>
         </tr>
     {{/article}}
     </tbody>
 </table>
+<a href="/articles/{{article.id}}/edit" class="btn btn-primary">Edit</a>
+<a href="/articles/{{article.id}}/delete" class="btn btn-danger">Delete</a>
+<br>
 <a href="/articles">All Article</a>
 <br>
 <a href="/articles/new">New Article</a>
+<br>
+
 {{>layouts/footer}}
