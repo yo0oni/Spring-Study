@@ -23,10 +23,10 @@ public class ArticleService {
         return articleRepository.findAll();
     }
 
-    public Article index(Long id) {
+    public Article show(Long id) {
         return articleRepository.findById(id).orElse(null);
     }
-    
+
     @Transactional
     public Article create(ArticleForm dto) {
         Article article = dto.toEntity();

@@ -28,7 +28,7 @@ public class ArticleApiController {
 
     @GetMapping("/api/articles/{id}")
     public Article show(@PathVariable Long id) {
-        return articleService.index(id);
+        return articleService.show(id);
     }
 
     @PostMapping("/api/articles")
