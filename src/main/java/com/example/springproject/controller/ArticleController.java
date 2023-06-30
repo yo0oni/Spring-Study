@@ -1,8 +1,11 @@
 package com.example.springproject.controller;
 
 import com.example.springproject.dto.ArticleForm;
+import com.example.springproject.dto.CommentDto;
 import com.example.springproject.entity.Article;
 import com.example.springproject.repository.ArticleRepository;
+import com.example.springproject.service.ArticleService;
+import com.example.springproject.service.CommentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,11 +21,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@Slf4j // 로깅을 위한 어노테이션
+@Slf4j
 public class ArticleController {
-    // new를 사용하여 레포지토리 객체를 만들어주지 않아도 되는 이유 : 스프링부트가 알아서 해줌
-    @Autowired // 스프링부트가 미리 생성해놓은 객체를 가져다가 자동 연결
+
+    @Autowired
     private ArticleRepository articleRepository;
+
+    @Autowired
+    private CommentService commentService;
 
 
     @GetMapping("/articles/new")
@@ -69,18 +75,19 @@ public class ArticleController {
 
 
     @GetMapping("/articles/{id}")
-    public String show(@PathVariable Long id, Model model) {
+    public String show(@PathVariable Long id,
+                       Model model) {
         log.info("id = " + id);
-
-        // 1. id로 데이터를 가져옴
+        // 1: id로 데이터를 가져옴!
         Article articleEntity = articleRepository.findById(id).orElse(null);
-
-        // 2. 가져온 데이터를 모델에 등록
+        List<CommentDto> commentsDtos = commentService.comments(id);
+        // 2: 가져온 데이터를 모델에 등록!
         model.addAttribute("article", articleEntity);
-
-        // 3. 보여줄 페이지를 설정
+        model.addAttribute("commentDtos", commentsDtos);
+        // 3: 보여줄 페이지를 설정!
         return "articles/show";
     }
+
 
 
     @GetMapping("/articles")
@@ -104,13 +111,15 @@ public class ArticleController {
         return "articles/edit";
     }
 
-    @GetMapping("articles/{id}/delete")
-    public String delete(@PathVariable Long id, RedirectAttributes rttr) {
+    @GetMapping("/articles/{id}/delete")
+    public String delete(@PathVariable Long id) {
+        log.info("삭제 요청이 들어왔습니다!");
+
         Article target = articleRepository.findById(id).orElse(null);
+        log.info(target.toString());
 
         if (target != null) {
             articleRepository.delete(target);
-            rttr.addFlashAttribute("msg", "삭제가 완료 되었습니다.");
         }
 
         return "redirect:/articles";
